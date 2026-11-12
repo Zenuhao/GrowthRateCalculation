@@ -151,12 +151,12 @@ def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
     for strain_name, indices in strain_groups.items():
         fig, ax = plt.subplots(figsize=(8,5))
 
-        colors = ["orange", "green", "blue"]
+        colors = ["blue", "green", "orange"]
 
         for i in indices:
             positive = np.isfinite(x) & np.isfinite(y[i]) & (y[i]>0)
             ax.scatter(x[positive], y[i,positive], s=40, alpha=0.8,
-                       label=f"{y_names[i]} (n={positive.sum()})")
+                       label=f"{y_names[i]} (n={positive.sum()})", color=colors[i % 3])
 
             if np.isfinite(a[i]) and np.isfinite(b[i]):
                 fit_x = x[mask[i]]
