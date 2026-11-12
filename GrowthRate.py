@@ -19,8 +19,8 @@ Y_NAMES = np.array(["S_tdt_1", "S_cmr_1", "C_tdt_1", "R_cmr_1", "R_tdt_1", "C_cm
             "S_yfp_3", "S_np_3", "C_yfp_3", "C_np_3", "R_yfp_3", "R_np_3", "R_tdtR_yfp"
             ])
 
-RANGES = np.array([(None,None), (None,None), (17,26), (8,18), (9,19), (None, None), (None, None), (None, None),
-                    (8,20), (8,21), (15,24), (12,22), (8,20), (None, None), (None, None), (None, None),
+RANGES = np.array([(None,None), (None,None), (17,26), (18,26), (9,19), (None, None), (None, None), (None, None),
+                    (8,20), (8,21), (15,24), (12,22), (21,27), (None, None), (None, None), (None, None),
                     (11,20), (6,18), (None,None), (16,22), (9,22), (None, None), (None, None), (None, None),
                     (6,15), (4,11), (16,26), (5,10), (6,14), (1,12), (None, None), (None, None),
                     (6,13), (6,12), (10,17), (6,12), (7,17), (5,12), (None, None), (None, None),
@@ -101,7 +101,7 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for i, name in enumerate(y_names):
-        fig, ax = plt.subplots(figsize=(8,5))
+        fig, ax = plt.subplots(figsize=(12,5))
         positive = np.isfinite(x) & np.isfinite(y[i]) & (y[i]>0)
         ax.scatter(x[positive], y[i,positive], s=40, alpha=0.8, label=f"Data (n={positive.sum()})")
 
@@ -149,7 +149,7 @@ def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
     }
 
     for strain_name, indices in strain_groups.items():
-        fig, ax = plt.subplots(figsize=(8,5))
+        fig, ax = plt.subplots(figsize=(12,5))
 
         colors = ["blue", "green", "orange"]
 
@@ -223,14 +223,14 @@ def main() -> None:
 
     Dbt = np.log(2) / Mean
     Dbt_std = Std * np.log(2) / Mean**2
-    fig, (ax1, ax2) = plt.subplots(1,2, figsize = (8,5))
+    fig, (ax1, ax2) = plt.subplots(1,2, figsize = (12,5))
     ax1.errorbar(Label, Mean, yerr = Std, capsize=5, fmt='o', markersize=5, ecolor='blue', markeredgecolor = "blue", color='b')
-    ax1.set_xlabel("Strain", fontsize = 24)
-    ax1.set_ylabel("Growth Rate [1/s]", fontsize = 24)
+    ax1.set_xlabel("Strain", fontsize = 12)
+    ax1.set_ylabel("Growth Rate [1/s]", fontsize = 12)
 
     ax2.errorbar(Label, Dbt, yerr = Dbt_std, capsize=5, fmt='o', markersize=5, ecolor='blue', markeredgecolor = "blue", color='b')
-    ax2.set_xlabel("Strain", fontsize = 24)
-    ax2.set_ylabel("Doubling Time [s]", fontsize = 24)
+    ax2.set_xlabel("Strain", fontsize = 12)
+    ax2.set_ylabel("Doubling Time [s]", fontsize = 12)
 
     fig.savefig(OUTPUT_DIR / "Results.png", dpi=300, bbox_inches="tight")
     
