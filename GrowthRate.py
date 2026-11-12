@@ -6,7 +6,7 @@ import sys
 
 DEFAULT_EXCEL_FILE = "data.xlsx"
 SHOW_PLOT = True
-OUTPUT_DIR = Path.home() / "Desktop" / "Python" / "Results"
+OUTPUT_DIR = Path.home() / "Desktop" / "Experiment" / "Results"
 
 Label = np.array([
 "Stdt", "Scmr", "Syfp", "Snp", "Ctdt", "Cyfp", "Cnp", "Rtdt", "Rcmr", "Ryfp", "Rnp"
@@ -240,7 +240,6 @@ def main() -> None:
     ax2.set_xlabel("Strain", fontsize = 24)
     ax2.set_ylabel("Doubling Time [s]", fontsize = 24)
 
-    plt.show()
     fig.savefig(OUTPUT_DIR / "Results.png", dpi=300, bbox_inches="tight")
     
 if __name__ == "__main__":
