@@ -20,14 +20,13 @@ Y_NAMES = np.array(["S_tdt_1", "S_cmr_1", "C_tdt_1", "R_cmr_1", "R_tdt_1", "C_cm
             "S_yfp_3", "S_np_3", "C_yfp_3", "C_np_3", "R_yfp_3", "R_np_3", "R_tdtR_yfp"
             ])
 
-RANGES = np.array([
-    (13,20), (9,20), (17,26), (8,18), (9,19), (None, None), (None, None), (None, None),
-    (8,20), (8,21), (15,24), (12,22), (8,20), (None, None), (None, None), (None, None),
-    (11,20), (6,18), (20,27), (16,22), (9,22), (None, None), (None, None), (None, None),
-    (6,15), (4,11), (16,26), (5,10), (6,14), (1,12), (None, None), (None, None),
-    (6,13), (6,12), (10,17), (6,12), (7,17), (5,12), (None, None), (None, None),
-    (5,14), (8,15), (20,27), (13,22), (4,16), (4,12), (None, None)]
-    ,dtype=object)
+RANGES = np.array([(None,None), (None,None), (17,26), (8,18), (9,19), (None, None), (None, None), (None, None),
+                    (8,20), (8,21), (15,24), (12,22), (8,20), (None, None), (None, None), (None, None),
+                    (11,20), (6,18), (None,None), (16,22), (9,22), (None, None), (None, None), (None, None),
+                    (6,15), (4,11), (16,26), (5,10), (6,14), (1,12), (None, None), (None, None),
+                    (6,13), (6,12), (10,17), (6,12), (7,17), (5,12), (None, None), (None, None),
+                    (5,14), (None,None), (None,None), (None,None), (4,16), (4,12), (None, None)]
+                    ,dtype=object)
 
 def processing(df):
     x = df.iloc[1,1:].to_numpy(dtype=float)
@@ -171,15 +170,15 @@ def main() -> None:
     print("b:", b)
 
     
-    Stdt = (a[0] + a[8] + a[16]) / 3
-    Scmr = (a[1] + a[9] + a[17]) / 3
-    Ctdt = (a[2] + a[10] + a[18]) / 3
+    Stdt = (a[8] + a[16]) / 2
+    Scmr = (a[9] + a[17]) / 2
+    Ctdt = (a[2] + a[10]) / 2
     Rcmr = (a[3] + a[11] + a[19]) / 3
     Rtdt = (a[4] + a[12] + a[20]) / 3
     Syfp = (a[24] + a[32] + a[40]) / 3
-    Snp = (a[25] + a[33] + a[41]) / 3
-    Cyfp = (a[26] + a[34] + a[42]) / 3
-    Cnp = (a[27] + a[35] + a[43]) / 3
+    Snp = (a[25] + a[33]) / 2
+    Cyfp = (a[26] + a[34]) / 2
+    Cnp = (a[27] + a[35]) / 2
     Ryfp = (a[28] + a[36] + a[44]) / 3
     Rnp = (a[29] + a[37] + a[45]) / 3
     
@@ -187,15 +186,15 @@ def main() -> None:
     Mean = np.array([Stdt, Scmr, Syfp, Snp, Ctdt, Cyfp, Cnp, Rtdt, Rcmr, Ryfp, Rnp])
 
     
-    Stdt_var = ((a[0] - Stdt)**2 + (a[8] - Stdt)**2 + (a[16] - Stdt)**2) / 3
-    Scmr_var = ((a[1] - Scmr)**2 + (a[9] - Scmr)**2 + (a[17] - Scmr)**2) / 3
-    Ctdt_var = ((a[2] - Ctdt)**2 + (a[10] - Ctdt)**2 + (a[18] - Ctdt)**2) / 3
+    Stdt_var = ((a[8] - Stdt)**2 + (a[16] - Stdt)**2) / 2
+    Scmr_var = ((a[9] - Scmr)**2 + (a[17] - Scmr)**2) / 2
+    Ctdt_var = ((a[2] - Ctdt)**2 + (a[10] - Ctdt)**2) / 2
     Rcmr_var = ((a[3] - Rcmr)**2 + (a[11] - Rcmr)**2 + (a[19] - Rcmr)**2) / 3
     Rtdt_var = ((a[4] - Rtdt)**2 + (a[12] - Rtdt)**2 + (a[20] - Rtdt)**2) / 3
     Syfp_var = ((a[24] - Syfp)**2 + (a[32] - Syfp)**2 + (a[40] - Syfp)**2) / 3
-    Snp_var = ((a[25] - Snp)**2 + (a[33] - Snp)**2 + (a[41] - Snp)**2) / 3
-    Cyfp_var = ((a[26] - Cyfp)**2 + (a[34] - Cyfp)**2 + (a[42] - Cyfp)**2) / 3
-    Cnp_var = ((a[27] - Cnp)**2 + (a[35] - Cnp)**2 + (a[43] - Cnp)**2) / 3
+    Snp_var = ((a[25] - Snp)**2 + (a[33] - Snp)**2) / 2
+    Cyfp_var = ((a[26] - Cyfp)**2 + (a[34] - Cyfp)**2) / 2
+    Cnp_var = ((a[27] - Cnp)**2 + (a[35] - Cnp)**2) / 2
     Ryfp_var = ((a[28] - Ryfp)**2 + (a[36] - Ryfp)**2 + (a[44] - Ryfp)**2) / 3
     Rnp_var = ((a[29] - Rnp)**2 + (a[37] - Rnp)**2 + (a[45] - Rnp)**2) / 3
     
