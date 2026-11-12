@@ -20,7 +20,7 @@ Y_NAMES = np.array(["S_tdt_1", "S_cmr_1", "C_tdt_1", "R_cmr_1", "R_tdt_1", "C_cm
             ])
 
 RANGES = np.array([(None,None), (None,None), (17,26), (18,26), (9,19), (None, None), (None, None), (None, None),
-                    (8,20), (8,21), (15,24), (12,22), (21,27), (None, None), (None, None), (None, None),
+                    (8,20), (8,21), (15,24), (23,29), (8,20), (None, None), (None, None), (None, None),
                     (11,20), (6,18), (None,None), (16,22), (9,22), (None, None), (None, None), (None, None),
                     (6,15), (4,11), (16,26), (5,10), (6,14), (1,12), (None, None), (None, None),
                     (6,13), (6,12), (10,17), (6,12), (7,17), (5,12), (None, None), (None, None),
@@ -101,7 +101,7 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for i, name in enumerate(y_names):
-        fig, ax = plt.subplots(figsize=(12,5))
+        fig, ax = plt.subplots(figsize=(8,5))
         positive = np.isfinite(x) & np.isfinite(y[i]) & (y[i]>0)
         ax.scatter(x[positive], y[i,positive], s=40, alpha=0.8, label=f"Data (n={positive.sum()})")
 
