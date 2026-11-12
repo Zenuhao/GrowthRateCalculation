@@ -5,8 +5,7 @@ from pathlib import Path
 import sys
 
 DEFAULT_EXCEL_FILE = "data.xlsx"
-SHOW_PLOT = True
-OUTPUT_DIR = Path.home() / "Desktop" / "Experiment" / "Results"
+OUTPUT_DIR = Path.home() / "Desktop" / "Experiment" / "Result"
 
 Label = np.array([
 "Stdt", "Scmr", "Syfp", "Snp", "Ctdt", "Cyfp", "Cnp", "Rtdt", "Rcmr", "Ryfp", "Rnp"
@@ -93,7 +92,7 @@ def lsm_fit_with_ranges(x,y, ranges=RANGES):
 
     return a, b, r_squared, mask
 
-def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR, show_plot=SHOW_PLOT):
+def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
 
     if len(y_names) != len(y):
         raise ValueError("The number of series names must match the number of series.")
@@ -134,7 +133,7 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR, show_
         filename = f"fitting_{name}.png"
         fig.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
 
-def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR, show_plot=SHOW_PLOT):
+def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
     strain_groups = {
         "Stdt": [0, 8, 16],
         "Scmr": [1, 9, 17],
@@ -151,7 +150,9 @@ def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR, 
 
     for strain_name, indices in strain_groups.items():
         fig, ax = plt.subplots(figsize=(8,5))
-        
+
+        colors = ["orange", "green", "blue"]
+
         for i in indices:
             positive = np.isfinite(x) & np.isfinite(y[i]) & (y[i]>0)
             ax.scatter(x[positive], y[i,positive], s=40, alpha=0.8,
@@ -160,11 +161,11 @@ def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR, 
             if np.isfinite(a[i]) and np.isfinite(b[i]):
                 fit_x = x[mask[i]]
                 ax.scatter(fit_x, y[i, mask[i]], s=70, facecolors="none", 
-                           edgecolors= "tab:orange", label=f"Used for fit {y_names[i]} (n={fit_x.size})")
+                           edgecolors= colors[i % 3], label=f"Used for fit {y_names[i]} (n={fit_x.size})")
 
                 line_x = np.linspace(fit_x.min(), fit_x.max(), 200)
                 line_y = np.exp(a[i] * line_x + b[i])
-                ax.plot(line_x, line_y, label=f"Fit {y_names[i]}: y= exp({a[i]:.4g}t {b[i]:+.4g})")
+                ax.plot(line_x, line_y, label=f"Fit {y_names[i]}: y= exp({a[i]:.4g}t {b[i]:+.4g})", color=colors[i % 3])
 
         ax.set_xlabel("Time [s]")
         ax.set_ylabel("ln(OD/OD_blank)")
@@ -185,13 +186,6 @@ def main() -> None:
 
     a, b, r_squared, mask = lsm_fit_with_ranges(x, y)
 
-    results = pd.DataFrame({
-        "series": Y_NAMES,
-        "a": a,
-        "b": b,
-        "R_squared_log": r_squared, 
-        "n_valid": mask.sum(axis=1)})
-
     make_figs(x, y, Y_NAMES, a, b, r_squared, mask)
     figs_by_strain(x, y, Y_NAMES, a, b, r_squared, mask)
     print(f"Figures saved to: {OUTPUT_DIR}")
@@ -211,10 +205,8 @@ def main() -> None:
     Ryfp = (a[28] + a[36] + a[44]) / 3
     Rnp = (a[29] + a[37] + a[45]) / 3
     
-
     Mean = np.array([Stdt, Scmr, Syfp, Snp, Ctdt, Cyfp, Cnp, Rtdt, Rcmr, Ryfp, Rnp])
 
-    
     Stdt_var = ((a[8] - Stdt)**2 + (a[16] - Stdt)**2) / 2
     Scmr_var = ((a[9] - Scmr)**2 + (a[17] - Scmr)**2) / 2
     Ctdt_var = ((a[2] - Ctdt)**2 + (a[10] - Ctdt)**2) / 2
