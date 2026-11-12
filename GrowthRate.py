@@ -39,15 +39,6 @@ def processing(df):
         raise ValueError("All x are same values")
     return x, y
 
-"""
-def lsm_fit(x, y):
-A = np.column_stack((x, np.ones_like(x)))
-coefficients = np.linalg.lstsq(A, y, rcond=None)[0]
-A, coefficients = lsm_fit(x,y)
-y_preds = (A @ coefficients).T
-return coefficients, y_preds
-"""
-
 def lsm_fit_with_ranges(x,y, ranges=RANGES):
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
@@ -143,9 +134,48 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR, show_
         filename = f"fitting_{name}.png"
         fig.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
 
-    if show_plot:
-        plt.show()
-    plt.close()
+def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR, show_plot=SHOW_PLOT):
+    strain_groups = {
+        "Stdt": [0, 8, 16],
+        "Scmr": [1, 9, 17],
+        "Ctdt": [2, 10, 18],
+        "Rcmr": [3, 11, 19],
+        "Rtdt": [4, 12, 20],
+        "Syfp": [24, 32, 40],
+        "Snp": [25, 33, 41],
+        "Cyfp": [26, 34, 42],
+        "Cnp": [27, 35, 43],
+        "Ryfp": [28, 36, 44],
+        "Rnp": [29, 37, 45]
+    }
+
+    for strain_name, indices in strain_groups.items():
+        fig, ax = plt.subplots(figsize=(8,5))
+        
+        for i in indices:
+            positive = np.isfinite(x) & np.isfinite(y[i]) & (y[i]>0)
+            ax.scatter(x[positive], y[i,positive], s=40, alpha=0.8,
+                       label=f"{y_names[i]} (n={positive.sum()})")
+
+            if np.isfinite(a[i]) and np.isfinite(b[i]):
+                fit_x = x[mask[i]]
+                ax.scatter(fit_x, y[i, mask[i]], s=70, facecolors="none", 
+                           edgecolors= "tab:orange", label=f"Used for fit {y_names[i]} (n={fit_x.size})")
+
+                line_x = np.linspace(fit_x.min(), fit_x.max(), 200)
+                line_y = np.exp(a[i] * line_x + b[i])
+                ax.plot(line_x, line_y, label=f"Fit {y_names[i]}: y= exp({a[i]:.4g}t {b[i]:+.4g})")
+
+        ax.set_xlabel("Time [s]")
+        ax.set_ylabel("ln(OD/OD_blank)")
+        ax.set_yscale("log")
+        ax.set_title(f"Exponential Fit of {strain_name}")
+        ax.grid(alpha=0.3)
+        ax.legend(loc="best")
+
+        fig.tight_layout()
+        filename = f"fitting_{strain_name}.png"
+        fig.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
 
 def main() -> None:
     excel_file = Path(sys.argv[1] if len(sys.argv) > 1 else DEFAULT_EXCEL_FILE)
@@ -163,12 +193,11 @@ def main() -> None:
         "n_valid": mask.sum(axis=1)})
 
     make_figs(x, y, Y_NAMES, a, b, r_squared, mask)
+    figs_by_strain(x, y, Y_NAMES, a, b, r_squared, mask)
     print(f"Figures saved to: {OUTPUT_DIR}")
-
 
     print("a:", a)
     print("b:", b)
-
     
     Stdt = (a[8] + a[16]) / 2
     Scmr = (a[9] + a[17]) / 2
