@@ -108,7 +108,7 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
         if np.isfinite(a[i]) and np.isfinite(b[i]):
             fit_x = x[mask[i]]
             ax.scatter(fit_x, y[i, mask[i]], s=70, facecolors="none", 
-                       edgecolors= "tab:orange", label=f"Used for fit (n={fit_x.size})")
+                       edgecolors= "tab:orange", label=f"Used for fit (n={fit_x.size})", color="tab:blue")
 
             line_x = np.linspace(fit_x.min(), fit_x.max(), 200)
             line_y = np.exp(a[i] * line_x + b[i])
