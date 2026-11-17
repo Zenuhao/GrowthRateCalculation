@@ -224,11 +224,11 @@ def main() -> None:
     Dbt = np.log(2) / Mean
     Dbt_std = Std * np.log(2) / Mean**2
     fig, (ax1, ax2) = plt.subplots(1,2, figsize = (12,5))
-    ax1.errorbar(Label, Mean, yerr = Std, capsize=5, fmt='o', markersize=5, ecolor='blue', markeredgecolor = "blue", color='b')
+    ax1.errorbar(Label, Mean, yerr = Std, capsize=5, fmt='o', markersize=2, ecolor='blue', markeredgecolor = "blue", color='b')
     ax1.set_xlabel("Strain", fontsize = 12)
     ax1.set_ylabel("Growth Rate [1/s]", fontsize = 12)
 
-    ax2.errorbar(Label, Dbt, yerr = Dbt_std, capsize=5, fmt='o', markersize=5, ecolor='blue', markeredgecolor = "blue", color='b')
+    ax2.errorbar(Label, Dbt, yerr = Dbt_std, capsize=5, fmt='o', markersize=2, ecolor='blue', markeredgecolor = "blue", color='b')
     ax2.set_xlabel("Strain", fontsize = 12)
     ax2.set_ylabel("Doubling Time [s]", fontsize = 12)
 
