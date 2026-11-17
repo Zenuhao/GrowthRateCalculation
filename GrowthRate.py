@@ -23,7 +23,7 @@ RANGES = np.array([(None,None), (None,None), (17,26), (18,26), (9,19), (None, No
                     (8,20), (8,21), (15,24), (23,29), (8,20), (None, None), (None, None), (None, None),
                     (11,20), (6,18), (None,None), (16,22), (9,22), (None, None), (None, None), (None, None),
                     (6,15), (4,11), (16,26), (5,10), (6,14), (1,12), (None, None), (None, None),
-                    (6,13), (6,12), (10,17), (6,12), (7,17), (5,12), (None, None), (None, None),
+                    (6,13), (6,12), (10,17), (6,12), (7,17), (2,8), (None, None), (None, None),
                     (5,14), (None,None), (None,None), (None,None), (4,16), (4,12), (None, None)]
                     ,dtype=object)
 
