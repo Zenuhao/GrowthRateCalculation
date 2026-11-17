@@ -108,12 +108,12 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
         if np.isfinite(a[i]) and np.isfinite(b[i]):
             fit_x = x[mask[i]]
             ax.scatter(fit_x, y[i, mask[i]], s=70, facecolors="none", 
-                       edgecolors= "tab:orange", label=f"Used for fit (n={fit_x.size})", color="tab:blue")
+                       edgecolors= "orange", label=f"Used for fit (n={fit_x.size})", color="blue")
 
             line_x = np.linspace(fit_x.min(), fit_x.max(), 200)
             line_y = np.exp(a[i] * line_x + b[i])
 
-            ax.plot(line_x, line_y, color="tab:red", label=f"Fit: y= exp({a[i]:.4g}t {b[i]:+.4g})")
+            ax.plot(line_x, line_y, color="red", label=f"Fit: y= exp({a[i]:.4g}t {b[i]:+.4g})")
             r2_text = f"{r_squared[i]:.4f}" if np.isfinite(r_squared[i]) else "undefined"
             visible_number = np.cumsum(positive)
             used_numbers = visible_number[mask[i]]
