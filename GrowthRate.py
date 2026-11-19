@@ -135,9 +135,8 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
 
 def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
     strain_groups = {
-        "Stdt": [0, 8, 16],
+        "Stdt": [0, 2, 8, 10, 16, 18],
         "Scmr": [1, 9, 17],
-        "Ctdt": [2, 10, 18],
         "Rcmr": [3, 11, 19],
         "Rtdt": [4, 12, 20],
         "Syfp": [24, 32, 40],
@@ -151,21 +150,21 @@ def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
     for strain_name, indices in strain_groups.items():
         fig, ax = plt.subplots(figsize=(12,5))
 
-        colors = ["blue", "green", "orange"]
+        colors = ["blue", "green", "orange", "purple", "brown", "pink"]
 
         for i in indices:
             positive = np.isfinite(x) & np.isfinite(y[i]) & (y[i]>0)
             ax.scatter(x[positive], y[i,positive], s=40, alpha=0.8,
-                       label=f"{y_names[i]} (n={positive.sum()})", color=colors[i % 3])
+                       label=f"{y_names[i]} (n={positive.sum()})", color=colors[i % 6])
 
             if np.isfinite(a[i]) and np.isfinite(b[i]):
                 fit_x = x[mask[i]]
                 ax.scatter(fit_x, y[i, mask[i]], s=70, facecolors="none", 
-                           edgecolors= colors[i % 3], label=f"Used for fit {y_names[i]} (n={fit_x.size})")
+                           edgecolors= colors[i % 6], label=f"Used for fit {y_names[i]} (n={fit_x.size})")
 
                 line_x = np.linspace(fit_x.min(), fit_x.max(), 200)
                 line_y = np.exp(a[i] * line_x + b[i])
-                ax.plot(line_x, line_y, label=f"Fit {y_names[i]}: y= exp({a[i]:.4g}t {b[i]:+.4g})", color=colors[i % 3])
+                ax.plot(line_x, line_y, label=f"Fit {y_names[i]}: y= exp({a[i]:.4g}t {b[i]:+.4g})", color=colors[i % 6])
 
         ax.set_xlabel("Time [s]")
         ax.set_ylabel("ln(OD/OD_blank)")
@@ -177,6 +176,7 @@ def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
         fig.tight_layout()
         filename = f"fitting_{strain_name}.png"
         fig.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
+
 
 def main() -> None:
     excel_file = Path(sys.argv[1] if len(sys.argv) > 1 else DEFAULT_EXCEL_FILE)
