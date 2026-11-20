@@ -5,19 +5,21 @@ from pathlib import Path
 import sys
 
 DEFAULT_EXCEL_FILE = "data.xlsx"
-OUTPUT_DIR = Path.home() / "Desktop" / "Experiment" / "Result"
+SINGLE_DIR = Path.home() / "Desktop" / "Experiment" / "Single"
+PAIRED_DIR = Path.home() / "Desktop" / "Experiment" / "Paired"
+
 
 Label = np.array([
 "Stdt", "Scmr", "Syfp", "Snp", "Ctdt", "Cyfp", "Cnp", "Rtdt", "Rcmr", "Ryfp", "Rnp"
 ])
 
-Y_NAMES = np.array(["S_tdt_1", "S_cmr_1", "C_tdt_1", "R_cmr_1", "R_tdt_1", "C_cmr_1", "S_tdtR_yfp_1", "R_tdtS_yfp_1",
-            "S_tdt_2", "S_cmr_2", "C_tdt_2", "R_cmr_2", "R_tdt_2", "C_cmr_2", "S_tdtR_yfp_2", "R_tdtS_yfp_2",
-            "S_tdt_3", "S_cmr_3", "C_tdt_3", "R_cmr_3", "R_tdt_3", "C_cmr_3", "S_tdtC_yfp", "C_tdtS_yfp",
-            "S_yfp_1", "S_np_1", "C_yfp_1", "C_np_1", "R_yfp_1", "R_np_1", "R_tdtC_yfp", "C_tdtR_yfp",
-            "S_yfp_2", "S_np_2", "C_yfp_2", "C_np_2", "R_yfp_2", "R_np_2", "S_tdtS_yfp", "C_tdtC_yfp",
-            "S_yfp_3", "S_np_3", "C_yfp_3", "C_np_3", "R_yfp_3", "R_np_3", "R_tdtR_yfp"
-            ])
+Y_NAMES = np.array(["Stdt_1", "Scmr_1", "Ctdt_1", "Rcmr_1", "Rtdt_1", "Ccmr_1", "Stdt-Ryfp_1", "Rtdt-Syfp_1",
+                    "Stdt_2", "Scmr_2", "Ctdt_2", "Rcmr_2", "Rtdt_2", "Ccmr_2", "Stdt-Ryfp_2", "Rtdt-Syfp_2",
+                    "Stdt_3", "Scmr_3", "Ctdt_3", "Rcmr_3", "Rtdt_3", "Ccmr_3", "Stdt-Cyfp", "Ctdt-Syfp",
+                    "Syfp_1", "Snp_1", "Cyfp_1", "Cnp_1", "Ryfp_1", "Rnp_1", "Rtdt-Cyfp", "Ctdt-Ryfp",
+                    "Syfp_2", "Snp_2", "Cyfp_2", "Cnp_2", "Ryfp_2", "Rnp_2", "Stdt-Syfp", "Ctdt-Cyfp",
+                    "Syfp_3", "Snp_3", "Cyfp_3", "Cnp_3", "Ryfp_3", "Rnp_3", "Rtdt-Ryfp"
+                    ])
 
 RANGES = np.array([(None,None), (None,None), (17,26), (18,26), (9,19), (None, None), (None, None), (None, None),
                     (8,20), (8,21), (15,24), (23,29), (8,20), (None, None), (None, None), (None, None),
@@ -92,7 +94,7 @@ def lsm_fit_with_ranges(x,y, ranges=RANGES):
 
     return a, b, r_squared, mask
 
-def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
+def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=SINGLE_DIR):
 
     if len(y_names) != len(y):
         raise ValueError("The number of series names must match the number of series.")
@@ -130,10 +132,10 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
         ax.legend(loc="best")
 
         fig.tight_layout()
-        filename = f"fitting_{name}.png"
+        filename = f"{name}.png"
         fig.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
 
-def figs_by_strain(x, y, y_names, a, b, mask, output_dir=OUTPUT_DIR):
+def figs_by_strain(x, y, y_names, a, b, mask, output_dir=PAIRED_DIR):
     strain_groups = {
         "Stdt": [0, 8, 16],
         "Ctdt": [2, 10, 18],
@@ -230,7 +232,7 @@ def figs_by_strain(x, y, y_names, a, b, mask, output_dir=OUTPUT_DIR):
         ax.legend(loc="best")
 
         fig.tight_layout()
-        filename = f"fitting_{strain_name}.png"
+        filename = f"{strain_name}.png"
         fig.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
 
 
@@ -243,8 +245,8 @@ def main() -> None:
     a, b, r_squared, mask = lsm_fit_with_ranges(x, y)
 
     make_figs(x, y, Y_NAMES, a, b, r_squared, mask)
-    figs_by_strain(x, y, Y_NAMES, a, b, r_squared, mask)
-    print(f"Figures saved to: {OUTPUT_DIR}")
+    figs_by_strain(x, y, Y_NAMES, a, b, mask)
+    print(f"Figures saved to: {SINGLE_DIR}")
 
     print("a:", a)
     print("b:", b)
@@ -288,7 +290,7 @@ def main() -> None:
     ax2.set_xlabel("Strain", fontsize = 12)
     ax2.set_ylabel("Doubling Time [s]", fontsize = 12)
 
-    fig.savefig(OUTPUT_DIR / "Results.png", dpi=300, bbox_inches="tight")
+    fig.savefig(SINGLE_DIR / "Results.png", dpi=300, bbox_inches="tight")
     
 if __name__ == "__main__":
     main()
