@@ -103,7 +103,7 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
     for i, name in enumerate(y_names):
         fig, ax = plt.subplots(figsize=(8,5))
         positive = np.isfinite(x) & np.isfinite(y[i]) & (y[i]>0)
-        ax.scatter(x[positive], y[i,positive], s=40, alpha=0.8, label=f"Data (n={positive.sum()})")
+        ax.scatter(x[positive], y[i,positive], s=40, alpha=0.5, label=f"Data (n={positive.sum()})")
 
         if np.isfinite(a[i]) and np.isfinite(b[i]):
             fit_x = x[mask[i]]
@@ -133,10 +133,10 @@ def make_figs(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
         filename = f"fitting_{name}.png"
         fig.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
 
-def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
+def figs_by_strain(x, y, y_names, a, b, mask, output_dir=OUTPUT_DIR):
     strain_groups = {
-        "Stdt": [0, 2, 8, 10, 16, 18],
-        "Scmr": [1, 9, 17],
+        "Stdt": [0, 8, 16],
+        "Ctdt": [2, 10, 18],
         "Rcmr": [3, 11, 19],
         "Rtdt": [4, 12, 20],
         "Syfp": [24, 32, 40],
@@ -144,27 +144,83 @@ def figs_by_strain(x, y, y_names, a, b, r_squared, mask, output_dir=OUTPUT_DIR):
         "Cyfp": [26, 34, 42],
         "Cnp": [27, 35, 43],
         "Ryfp": [28, 36, 44],
-        "Rnp": [29, 37, 45]
+        "Rnp": [29, 37, 45],
+
+        "Stdt & Ctdt": [0, 2, 8, 10, 16, 18],
+        "Stdt & Rcmr": [0, 3, 8, 11, 16, 19],
+        "Stdt & Rtdt": [0, 4, 8, 12, 16, 20],
+        "Stdt & Syfp": [0, 24, 8, 32, 16, 40],
+        "Stdt & Snp": [0, 25, 8, 33, 16, 41],
+        "Stdt & Cyfp": [0, 26, 8, 34, 16, 42],
+        "Stdt & Cnp": [0, 27, 8, 35, 16, 43],
+        "Stdt & Ryfp": [0, 28, 8, 36, 16, 44],
+        "Stdt & Rnp": [0, 29, 8, 37, 16, 45],
+        
+        "Ctdt & Rcmr": [2, 3, 10, 11, 18, 19],
+        "Ctdt & Rtdt": [2, 4, 10, 12, 18, 20],
+        "Ctdt & Syfp": [2, 24, 10, 32, 18, 40],
+        "Ctdt & Snp": [2, 25, 10, 33, 18, 41],
+        "Ctdt & Cyfp": [2, 26, 10, 34, 18, 42],
+        "Ctdt & Cnp": [2, 27, 10, 35, 18, 43],
+        "Ctdt & Ryfp": [2, 28, 10, 36, 18, 44],
+        "Ctdt & Rnp": [2, 29, 10, 37, 18, 45],
+
+        "Rcmr & Rtdt": [3, 4, 11, 12, 19, 20],
+        "Rcmr & Syfp": [3, 24, 11, 32, 19, 40],
+        "Rcmr & Snp": [3, 25, 11, 33, 19, 41],
+        "Rcmr & Cyfp": [3, 26, 11, 34, 19, 42],
+        "Rcmr & Cnp": [3, 27, 11, 35, 19, 43],
+        "Rcmr & Ryfp": [3, 28, 11, 36, 19, 44],
+        "Rcmr & Rnp": [3, 29, 11, 37, 19, 45],
+
+        "Rtdt & Syfp": [4, 24, 12, 32, 20, 40],
+        "Rtdt & Snp": [4, 25, 12, 33, 20, 41],
+        "Rtdt & Cyfp": [4, 26, 12, 34, 20, 42],
+        "Rtdt & Cnp": [4, 27, 12, 35, 20, 43],
+        "Rtdt & Ryfp": [4, 28, 12, 36, 20, 44],
+        "Rtdt & Rnp": [4, 29, 12, 37, 20, 45],
+        
+        "Syfp & Snp": [24, 25, 32, 33, 40, 41],
+        "Syfp & Cyfp": [24, 26, 32, 34, 40, 42],
+        "Syfp & Cnp": [24, 27, 32, 35, 40, 43],
+        "Syfp & Ryfp": [24, 28, 32, 36, 40, 44],
+        "Syfp & Rnp": [24, 29, 32, 37, 40, 45],
+
+        "Snp & Cyfp": [25, 26, 33, 34, 41, 42],
+        "Snp & Cnp": [25, 27, 33, 35, 41, 43],
+        "Snp & Ryfp": [25, 28, 33, 36, 41, 44],
+        "Snp & Rnp": [25, 29, 33, 37, 41, 45],
+
+        "Cyfp & Cnp": [26, 27, 34, 35, 42, 43],
+        "Cyfp & Ryfp": [26, 28, 34, 36, 42, 44],
+        "Cyfp & Rnp": [26, 29, 34, 37, 42, 45],
+
+        "Cnp & Ryfp": [27, 28, 35, 36, 43, 44],
+        "Cnp & Rnp": [27, 29, 35, 37, 43, 45],
+
+        "Ryfp & Rnp": [28, 29, 36, 37, 44, 45],
     }
+
+    base_colors = ["red", "blue", "green", "yellow", "purple", "orange"]
 
     for strain_name, indices in strain_groups.items():
         fig, ax = plt.subplots(figsize=(12,5))
 
-        colors = ["blue", "green", "orange", "purple", "brown", "pink"]
+        colors = [base_colors[i % len(base_colors)] for i in range(len(indices))]
 
-        for i in indices:
+        for k, i in enumerate(indices):
             positive = np.isfinite(x) & np.isfinite(y[i]) & (y[i]>0)
-            ax.scatter(x[positive], y[i,positive], s=40, alpha=0.8,
-                       label=f"{y_names[i]} (n={positive.sum()})", color=colors[i % 6])
+            ax.scatter(x[positive], y[i,positive], s=40, alpha=0.5,
+                       label=f"{y_names[i]} (n={positive.sum()})", color=colors[k])
 
             if np.isfinite(a[i]) and np.isfinite(b[i]):
                 fit_x = x[mask[i]]
                 ax.scatter(fit_x, y[i, mask[i]], s=70, facecolors="none", 
-                           edgecolors= colors[i % 6], label=f"Used for fit {y_names[i]} (n={fit_x.size})")
+                           edgecolors= colors[k], label=f"Used for fit {y_names[i]} (n={fit_x.size})")
 
                 line_x = np.linspace(fit_x.min(), fit_x.max(), 200)
                 line_y = np.exp(a[i] * line_x + b[i])
-                ax.plot(line_x, line_y, label=f"Fit {y_names[i]}: y= exp({a[i]:.4g}t {b[i]:+.4g})", color=colors[i % 6])
+                ax.plot(line_x, line_y, label=f"Fit {y_names[i]}: y= exp({a[i]:.4g}t {b[i]:+.4g})", color=colors[k])
 
         ax.set_xlabel("Time [s]")
         ax.set_ylabel("ln(OD/OD_blank)")
